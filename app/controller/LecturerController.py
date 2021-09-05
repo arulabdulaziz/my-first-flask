@@ -1,5 +1,7 @@
 from app.model import lecturer
+from app.model import student
 from app.model.lecturer import Lecturer
+from app.model.student import Student
 
 from app import response, app, db
 from flask import request
@@ -13,10 +15,45 @@ def formatLecturer(data):
         "created_at": data.created_at,
         "updated_at": data.updated_at,
     }
-
+def formatStudent(data):
+    return {
+        "id": data.id,
+        "nim": data.nim,
+        "name": data.name,
+        "phone": data.phone,
+        "address": data.address,
+        "created_at": data.created_at,
+        "updated_at": data.updated_at,
+    }
 def index():
     try:
         lecturer = Lecturer.query.all()
         return response.success(list(map(formatLecturer, lecturer)))
     except Exception as e:
         return response.error(e)
+def show(id):
+    try:
+        # print(Lecturer.query.filter_by(id = id).all())
+        lecturer = Lecturer.query.filter_by(id = id).first()
+        # print(Student.query.filter((Student.first_lecturer == id) | (Student.second_lecturer==id)).all())
+        student = Student.query.filter((Student.first_lecturer == id) | (Student.second_lecturer==id)).all()
+        lecturer = formatLecturer(lecturer)
+        lecturer["students"] = list(map(formatStudent, student))
+        return response.success(lecturer)
+    except Exception as e:
+        return response.error(e)
+def create():
+    try:
+        # https://mikebridge.github.io/post/python-flask-kubernetes-2/   <- validation input json
+        # nidn = request.args.get('nidn') # to get params in json
+        nidn = request.json["nidn"] # to get body in json
+        name = request.json["name"]
+        phone = request.json["phone"]
+        address = request.json["address"]
+        lecturer = Lecturer(nidn = nidn, name = name, phone = phone, address = address)
+        db.session.add(lecturer)
+        db.session.commit()
+        return response.success(formatLecturer(lecturer))
+    except Exception as e:
+        return response.error(e)
+        
