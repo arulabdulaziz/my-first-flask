@@ -1,0 +1,18 @@
+from app import db
+from datetime import datetime
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+
+class User(db.Model):
+    __tablename__ = 'users'
+    # id = db.Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    # id = db.Column('id', db.Text(length=36), default=lambda: str(uuid.uuid4()), primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(250), nullable = False)
+    email = db.Column(db.String(60), index = True, unique= True, nullable = False)
+    password = db.Column(db.String(250), nullable = False)
+    deleted_at = db.Column(db.DateTime, default = datetime.utcnow)
+    created_at = db.Column(db.DateTime, default = datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default = datetime.utcnow)
+    def __repr__(self) -> str:
+        return f"<User {self}>"
