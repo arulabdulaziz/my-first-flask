@@ -10,6 +10,10 @@ def lecturers():
     if request.method == "POST":
         return LecturerController.create()
     return LecturerController.index()
-@app.route("/lecturer/<id>", methods=["GET"])
+@app.route("/lecturer/<id>", methods=["GET", "PUT", "DELETE"])
 def lecturer(id):
+    if request.method == "PUT":
+        return LecturerController.update(id)
+    elif request.method == "DELETE":
+        return LecturerController.destroy(id)
     return LecturerController.show(id)

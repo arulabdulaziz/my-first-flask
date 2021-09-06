@@ -12,4 +12,4 @@ def error(error, status=400):
         "success": False,
         "error": error,
     }
-    return make_response(jsonify(res))
+    return make_response(jsonify(res), status)

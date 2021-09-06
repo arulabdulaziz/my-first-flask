@@ -25,10 +25,12 @@ def formatStudent(data):
         "created_at": data.created_at,
         "updated_at": data.updated_at,
     }
+def response_undefined_data():
+    return response.error("Lecturer not Found", 404)
 def index():
     try:
         lecturer = Lecturer.query.all()
-        return response.success(list(map(formatLecturer, lecturer)))
+        return response.success(list(map(formatLecturer, lecturer)), 200)
     except Exception as e:
         return response.error(e)
 def show(id):
@@ -52,6 +54,32 @@ def create():
         address = request.json["address"]
         lecturer = Lecturer(nidn = nidn, name = name, phone = phone, address = address)
         db.session.add(lecturer)
+        db.session.commit()
+        return response.success(formatLecturer(lecturer))
+    except Exception as e:
+        return response.error(e)
+
+def update(id):
+    try:
+        # https://mikebridge.github.io/post/python-flask-kubernetes-2/   <- validation input json
+        # nidn = request.args.get('nidn') # to get params in json
+        lecturer = Lecturer.query.filter_by(id = id).first()
+        if not lecturer:
+            return response_undefined_data()
+        lecturer.nidn = request.json["nidn"]
+        lecturer.name = request.json["name"]
+        lecturer.phone = request.json["phone"]
+        lecturer.address = request.json["address"]
+        db.session.commit()
+        return response.success(formatLecturer(lecturer))
+    except Exception as e:
+        return response.error(e)
+def destroy(id):
+    try:
+        lecturer = Lecturer.query.filter_by(id = id).first()
+        if not lecturer:
+            return response_undefined_data()
+        db.session.delete(lecturer)
         db.session.commit()
         return response.success(formatLecturer(lecturer))
     except Exception as e:
