@@ -26,7 +26,7 @@ def formatStudent(data):
         "updated_at": data.updated_at,
     }
 def response_undefined_data():
-    return response.error("Lecturer not Found", 404)
+    return response.error(["Lecturer not Found"], 404)
 def index():
     try:
         lecturer = Lecturer.query.all()
@@ -46,7 +46,7 @@ def show(id):
         return response.error(e)
 def create():
     try:
-        # https://mikebridge.github.io/post/python-flask-kubernetes-2/   <- validation input json
+        # https://medium.com/analytics-vidhya/server-validation-in-flask-api-with-json-schema-963aa05e305f   <- validation input json
         # nidn = request.args.get('nidn') # to get params in json
         nidn = request.json["nidn"] # to get body in json
         name = request.json["name"]
@@ -61,7 +61,7 @@ def create():
 
 def update(id):
     try:
-        # https://mikebridge.github.io/post/python-flask-kubernetes-2/   <- validation input json
+        # https://medium.com/analytics-vidhya/server-validation-in-flask-api-with-json-schema-963aa05e305f   <- validation input json
         # nidn = request.args.get('nidn') # to get params in json
         lecturer = Lecturer.query.filter_by(id = id).first()
         if not lecturer:
