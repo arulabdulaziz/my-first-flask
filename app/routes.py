@@ -40,7 +40,10 @@ def lecturers():
         return LecturerController.create()
     return LecturerController.index()
 
-    
+@app.route('/lecturer/page')
+def paginations():
+    return LecturerController.paginate()
+
 @app.route("/lecturer/<id>", methods=["GET", "PUT", "DELETE"])
 @jwt_required(lambda a: a)
 @expects_json(lecturer_schema_validation, ignore_for=['GET', "DELETE"])
