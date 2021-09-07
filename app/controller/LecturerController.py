@@ -5,7 +5,7 @@ from app.model.student import Student
 
 from app import response, app, db
 from flask import request
-def formatLecturer(data):
+def format_lecturer(data):
     return {
         "id": data.id,
         "name": data.name,
@@ -15,7 +15,7 @@ def formatLecturer(data):
         "created_at": data.created_at,
         "updated_at": data.updated_at,
     }
-def formatStudent(data):
+def format_student(data):
     return {
         "id": data.id,
         "nim": data.nim,
@@ -26,21 +26,19 @@ def formatStudent(data):
         "updated_at": data.updated_at,
     }
 def response_undefined_data():
-    return response.error(["Lecturer not Found"], 404)
+    return response.error([{"message": "Lecturer not Found"}], 404)
 def index():
     try:
         lecturer = Lecturer.query.all()
-        return response.success(list(map(formatLecturer, lecturer)), 200)
+        return response.success(list(map(format_lecturer, lecturer)), 200)
     except Exception as e:
         return response.error(e)
 def show(id):
     try:
-        # print(Lecturer.query.filter_by(id = id).all())
         lecturer = Lecturer.query.filter_by(id = id).first()
-        # print(Student.query.filter((Student.first_lecturer == id) | (Student.second_lecturer==id)).all())
         student = Student.query.filter((Student.first_lecturer == id) | (Student.second_lecturer==id)).all()
-        lecturer = formatLecturer(lecturer)
-        lecturer["students"] = list(map(formatStudent, student))
+        lecturer = format_lecturer(lecturer)
+        lecturer["students"] = list(map(format_student, student))
         return response.success(lecturer)
     except Exception as e:
         return response.error(e)
@@ -55,7 +53,7 @@ def create():
         lecturer = Lecturer(nidn = nidn, name = name, phone = phone, address = address)
         db.session.add(lecturer)
         db.session.commit()
-        return response.success(formatLecturer(lecturer))
+        return response.success(format_lecturer(lecturer))
     except Exception as e:
         return response.error(e)
 
@@ -71,7 +69,7 @@ def update(id):
         lecturer.phone = request.json["phone"]
         lecturer.address = request.json["address"]
         db.session.commit()
-        return response.success(formatLecturer(lecturer))
+        return response.success(format_lecturer(lecturer))
     except Exception as e:
         return response.error(e)
 def destroy(id):
@@ -81,7 +79,7 @@ def destroy(id):
             return response_undefined_data()
         db.session.delete(lecturer)
         db.session.commit()
-        return response.success(formatLecturer(lecturer))
+        return response.success(format_lecturer(lecturer))
     except Exception as e:
         return response.error(e)
         
