@@ -21,6 +21,14 @@ def login():
     return UserController.login()
 
 
+@app.route("/file-upload", methods=["POST"])
+@jwt_required(lambda a: a)
+def upload():
+    current_user = get_jwt_identity()
+    if not current_user:
+        return unauthorization(current_user)
+    return UserController.upload()
+
 @app.route("/lecturer", methods=["GET", "POST"])
 @jwt_required(lambda a: a)
 @expects_json(lecturer_schema_validation, ignore_for=['GET'])

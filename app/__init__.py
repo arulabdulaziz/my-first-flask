@@ -19,5 +19,5 @@ jwt = JWTManager(app)
 @jwt.token_verification_failed_loader
 def my_expired_token_callback(jwt_header, jwt_payload):
     return jsonify(code="dave", err="I can't let you do that"), 401
-from app.model import user, lecturer, student
+from app.model import user, lecturer, student, image
 from app import routes
